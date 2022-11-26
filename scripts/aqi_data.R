@@ -30,23 +30,20 @@ names(air_data_tib) <- c("Id", "Indeks", "Data Pomiaru")
 air_data_tib$Indeks <- ordered(air_data_tib$Indeks, levels = c("Bardzo dobry", "Dobry", "Umiarkowany", "Dostateczny", "Zły", "Bardzo zły"))
 air_data_tib$Id <- as.numeric(air_data_tib$Id)
 
-
-#Wybieramy dane geolokacyjne stacji, które udostępniają polski indeks jakości powietrza
-stacje_geo_data <- stacje %>%
-  select(id, gegrLon, gegrLat) %>%
-  mutate(id = as.numeric(id), 
-         gegrLon = round(as.numeric(gegrLon), digits = 4), 
-         gegrLat = round(as.numeric(gegrLat), digits = 4)) %>% 
-  filter(id %in% as.numeric(air_data_tib$Id))
-#UPROŚCIĆ ^ i v
+  
+#Wybieramy stacje z aktywnym indeksem jakości powietrza, zmieniamy charakterystykę trzech kluczowych kolumn
 stacje_data_w_index <- stacje %>%
+  mutate(id = as.integer(id), 
+         gegrLon = round(as.numeric(gegrLon), digits = 4), 
+         gegrLat = round(as.numeric(gegrLat), digits = 4)) %>%
   filter(id %in% as.numeric(air_data_tib$Id))
 
+#Wybieramy poszczególne kolumny (ponieważ jest ich 10, nie 6) i tworzymy nową, poprawioną ramkę danych (prawdopodobnie można byłoby zrobić to prościej)
 SDWI_id <- stacje_data_w_index$id
 SDWI_nazwa <- stacje_data_w_index$stationName
-SDWI_Lat <- as.numeric(stacje_data_w_index$gegrLat)
-SDWI_Long <- as.numeric(stacje_data_w_index$gegrLon)
-SDWI_miasto_id <- as.integer(stacje_data_w_index$city$id)
+SDWI_Lat <- stacje_data_w_index$gegrLat
+SDWI_Long <- stacje_data_w_index$gegrLon
+SDWI_miasto_id <- stacje_data_w_index$city$id
 SDWI_miasto <- stacje_data_w_index$city$name
 SDWI_gmina <- stacje_data_w_index$city$commune$communeName
 SDWI_powiat <- stacje_data_w_index$city$commune$districtName
