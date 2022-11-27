@@ -80,3 +80,6 @@ fill_polygons <- stacja_indeks_joint %>%
   arrange(-n) %>%
   group_by(województwo) %>%
   slice_head(n = 1)
+
+kolejność <- c(7, 14, 15, 16, 12, 10, 13, 2, 9, 5, 4, 1, 3, 11, 8, 6)
+fill_nazwy[order(order(woj_nazwy))]
