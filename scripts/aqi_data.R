@@ -81,5 +81,10 @@ fill_polygons <- stacja_indeks_joint %>%
   group_by(województwo) %>%
   slice_head(n = 1)
 
-kolejność <- c(7, 14, 15, 16, 12, 10, 13, 2, 9, 5, 4, 1, 3, 11, 8, 6)
-fill_nazwy[order(order(woj_nazwy))]
+
+fill_polygons <- fill_polygons[order(order(woj_nazwy)),]
+
+each_woj_index <- fill_polygons$Indeks
+
+woj_shp_bez_na_2 <- woj_shp_bez_na %>%
+  add_column(.before = 'geometry' ,each_woj_index)
