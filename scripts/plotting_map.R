@@ -17,4 +17,4 @@ ggplot() +
   labs(fill = 'Indeks Województwa', color = 'Indeks Stacji') +
   coord_sf() +
   theme_void() +
-  theme(legend.position = "left", legend.direction = "vertical")
+  theme(legend.position = "left", legend.direction = "vertical", legend.box.margin = margin(6, 6, 6, 6))

@@ -14,21 +14,26 @@ for (i in 1:length(stacje_all_id)) {
   stacja <- fromJSON(paste0("https://api.gios.gov.pl/pjp-api/rest/aqindex/getIndex/", stacje_all_id[i]))
   if (stacja$stIndexStatus == TRUE) {
     indeks <- stacja$stIndexLevel$indexLevelName
+    indeks_id <- stacja$stIndexLevel$id
     data_pomiaru <- stacja$stCalcDate
-    vec <- c(stacje_all_id[i], indeks, data_pomiaru)
+    vec <- c(stacje_all_id[i], indeks, indeks_id, data_pomiaru)
     air_data <- c(air_data, vec)
   }
 }
-rm(stacja, indeks, data_pomiaru, vec)
+rm(stacja, indeks, data_pomiaru, indeks_id, vec)
 
 #Pozyskane dane umieszczamy w przystępniejszej do odczytu formie
-air_data_m <- matrix(air_data, ncol = 3, byrow = T)
+air_data_m <- matrix(air_data, ncol = 4, byrow = T)
 air_data_tib <- as_tibble(air_data_m, .name_repair = "unique")
-names(air_data_tib) <- c("Id", "Indeks", "Data Pomiaru")
+names(air_data_tib) <- c("Id", "Indeks", "Ind_Id", "Data Pomiaru")
 
 #Nadajemy pożądane typy danych w kolumnach
-air_data_tib$Indeks <- ordered(air_data_tib$Indeks, levels = c("Bardzo dobry", "Dobry", "Umiarkowany", "Dostateczny", "Zły", "Bardzo zły"))
+air_data_tib$Indeks <- ordered(air_data_tib$Indeks, levels = c("Bardzo zły", "Zły", "Dostateczny", "Umiarkowany", "Dobry", "Bardzo dobry"))
 air_data_tib$Id <- as.numeric(air_data_tib$Id)
+air_data_tib$Ind_Id <- as.numeric(air_data_tib$Ind_Id)
+
+#Tworzymy osobną tabelę wyłącznie dla danych o indeksie i jego id
+indeks_id_name <- tibble(name = c("Bardzo zły", "Zły", "Dostateczny", "Umiarkowany", "Dobry", "Bardzo dobry"), id = c(seq(5, 0, by = -1)))
 
   
 #Wybieramy stacje z aktywnym indeksem jakości powietrza, zmieniamy charakterystykę trzech kluczowych kolumn
