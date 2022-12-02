@@ -67,30 +67,26 @@ stacje_z_indeksem <- tibble(as_tibble_col(SDWI_id, column_name = "id"),
                             as_tibble_col(SDWI_województwo, column_name = "województwo"),
                             as_tibble_col(SDWI_adres, column_name = "adres"))
 
-rm(SDWI_id, SDWI_nazwa, SDWI_Lat, SDWI_Long, SDWI_miasto_id, SDWI_miasto, SDWI_gmina, SDWI_powiat, SDWI_województwo, SDWI_adres)
+rm(stacje_data_w_index, SDWI_id, SDWI_nazwa, SDWI_Lat, SDWI_Long, SDWI_miasto_id, SDWI_miasto, SDWI_gmina, SDWI_powiat, SDWI_województwo, SDWI_adres)
 
-stacja_indeks_joint <- stacje_z_indeksem %>%
+stacja_indeks_joint_ind_id <- stacje_z_indeksem %>%
   inner_join(air_data_tib, by = c("id" = "Id")) %>%
-  select(id, Indeks, long, lat, województwo)
+  select(id, Indeks_Id, long, lat, województwo)
 
-stacja_indeks_joint %>%
-  select(-id, -long, -lat) %>%
-  group_by(województwo, Indeks) %>%
-  summarize(n = n()) %>%
-  print(n = Inf)
+stacja_joint_indeks_name <- stacja_indeks_joint_ind_id %>%
+  inner_join(indeks_id_name, by = c("Indeks_Id" = "Id"))
 
-fill_polygons <- stacja_indeks_joint %>%
+
+fill_polygons <- stacja_indeks_joint_ind_id %>%
   select(-id, -long, -lat) %>%
-  group_by(województwo, Indeks) %>%
-  summarize(n = n()) %>%
-  arrange(-n) %>%
   group_by(województwo) %>%
-  slice_head(n = 1)
+  summarize(avg_index = round(mean(Indeks_Id))) %>%
+  inner_join(indeks_id_name, by = c("avg_index" = "Id"))
 
 
 fill_polygons <- fill_polygons[order(order(woj_nazwy)),]
 
-each_woj_index <- fill_polygons$Indeks
+each_woj_index <- fill_polygons$Name
 
-woj_shp_bez_na_2 <- woj_shp_bez_na %>%
+woj_shp_bez_na <- woj_shp_bez_na %>%
   add_column(.before = 'geometry' ,each_woj_index)
