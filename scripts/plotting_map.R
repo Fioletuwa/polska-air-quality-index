@@ -18,3 +18,4 @@ ggplot() +
   coord_sf() +
   theme_void() +
   theme(legend.position = "left", legend.direction = "vertical", legend.box.margin = margin(0, 0, 0, 6))
+
