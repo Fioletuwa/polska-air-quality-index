@@ -13,7 +13,7 @@ ggplot() +
   scale_shape_manual(values = 21) +
   geom_sf(data = woj_shp_bez_na, color = 'black', aes(fill = factor(each_woj_index))) +
   geom_sf(data = mapowanie_stacji_t, aes(color = 'black', fill = Name), shape = 21) +
-  ggtitle("Mapa Polskiego Indeksu Jakości Powietrza dla dnia 02.12.2022") +
+  ggtitle("Mapa Polskiego Indeksu Jakości Powietrza dla dnia 10.01.2023") +
   labs(fill = 'Indeks Województwa', color = 'Indeks Stacji') +
   coord_sf() +
   theme_void() +
